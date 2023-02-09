@@ -26,26 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $this->data['pets'] = Pet::where('status', '=', '0')->get();
-        $this->data['adopted'] = AdoptionRequest::where('status', '=', '1')->get();
-        return view('main', $this->data);
+        return view('main');
     }
 
-    public function pet($id)
-    {
-        $this->data['pet'] = Pet::find($id);
-        return view('pet', $this->data);
-    }
-
-    public function adopt()
-    {
-        $this->data['pets'] = Pet::where('status', '=', '0')->get();
-        return view('adopt', $this->data);
-    }
-
-    public function trivia()
-    {
-        $this->data['trivias'] = Trivia::get();
-        return view('trivia', $this->data);
-    }
 }

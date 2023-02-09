@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard | PetPal</title>
+  <title>Order | Food App</title>
 
 <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -14,11 +14,20 @@
   <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     .content-wrapper .content{
       padding: .5rem 1rem !important;
     }
+    .content-wrapper{
+        background-color: #f2f4f6;
+    }
+    p{
+        font-size:16px !important;
+    }
+
   </style>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -69,14 +78,14 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
           <li class="nav-item">
-            <a href="{{route('admin.dashboard')}}" class="nav-link active">
+            <a href="{{route('admin.dashboard')}}" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Dashboard</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{route('orderparent.index')}}" class="nav-link">
+            <a href="{{route('orderparent.index')}}" class="nav-link active">
               <i class="nav-icon fas fa-utensils"></i>
               <p>Order</p>
             </a>
@@ -94,8 +103,9 @@
           </li>
 
           <div class="mt-3">
-            <label>Settings</label>
+          <label>Settings</label>
           </div>  
+
 
           <!-- Menu -->
           <li class="nav-item">
@@ -128,19 +138,76 @@
     <!-- /.sidebar -->
   </aside>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper pt-3">
 
 
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper p-5">
+<!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="mb-3 text-center">
+                <h1 style="color: rgb(18, 66, 125)" class="mb-4">Select Menu</h1>
+                <p style="color: rgb(18, 66, 125, 1); "><a href="{{route('orderparent.index')}}" style="color: rgb(18, 66, 125, 1);">Category</a> <span class="fa fa-arrow-right mx-1" style="font-size:11px;"></span> 
+                    @foreach($parents as $data)
+                        @if($data->id == $category_id)
+                            {{$data->name}}
+                        @endif
+                    @endforeach
+                </p>
+            </div>
 
-  </div>
-  <!-- /.content-wrapper -->
+            <div class="row">
+                @foreach($menus as $data)
+                    <div class="col-md-4 p-4">
+                        <div class="col-md-12 bg-white p-4" style="box-shadow:rgb(0 0 0 / 3.8%) 0px 0px 1px 2px;">
+                            <div class="">
+                                  <img src="{{asset('uploads/images/menu_items/child/'. $data->image)}}" class="img-fluid">
+                                <div class="row pt-3">
+                                    <div class="col-sm-6">
+                                        <p class="m-0 p-0" style="font-size:22px; color: rgb(18, 66, 125)"><a href="#" style="color: rgb(18, 66, 125)">{{$data->name}}</a></p>
+                                    </div>
+                                    <div class="col-sm-6 align-top text-right">
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#orderModal">Order</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+        </div> <!-- /container-fluid -->
+    </section> <!-- /section -->
 
 
+</div>
+<!-- /.content-wrapper -->
   
 </div>
 <!-- ./wrapper -->
 
+
+<!-- Start Modal -->
+<div class="modal fade" id="orderModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+    <h4 class="modal-title">Adobo</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Content coming soon..</p>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm">Submit</button>
+    </div>
+</div>
+<!-- End Modal -->
+
+<!-- Modal -->
 
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
@@ -148,8 +215,21 @@
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+@if(Session::has('parent_created'))
+    <script>
+        toastr.info("{!! Session::get('parent_created') !!}");
+    </script>
+@elseif(Session::has('parent_updated'))
+    <script>
+        toastr.success("{!! Session::get('parent_updated') !!}");
+    </script>
+@endif
 
 @yield('custom-script')
+
 </body>
 </html>
 
